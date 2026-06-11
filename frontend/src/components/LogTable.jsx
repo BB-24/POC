@@ -8,7 +8,7 @@ function formatTimestamp(value) {
   return date.toLocaleString();
 }
 
-export default function LogTable({ totalRows, pageSize, pageCache, loadPage, onRowClick, selectedTarget, searchEventId = "" }) {
+export default function LogTable({ totalRows, pageSize, pageCache, loadPage, onRowClick, selectedTarget, searchEventId = "", timelineTimeLimit }) {
   const handleScroll = useCallback(
     (event) => {
       const element = event.target;
