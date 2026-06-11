@@ -3,6 +3,10 @@ import pandas as pd
 
 class LogProcessor:
     numeric_columns = [
+        "Event Count",
+        "Source Port",
+        "Destination Port",
+        "Magnitude",
         "Bytes Sent",
         "Bytes Received",
         "Duration Seconds",

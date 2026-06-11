@@ -4,9 +4,14 @@ import api from "../api/api";
 import { useLogStore } from "../store/logStore";
 import Header from "../components/Header";
 import Sidebar from "../components/Sidebar";
-import TrafficFlowMap from "../components/TrafficFlowMap";
+import KPICards from "../components/KPICards";
+import NetworkGraph from "../components/NetworkGraph";
+import TrafficFlowCard from "../components/TrafficFlowCard";
 import LogTable from "../components/LogTable";
 import LoadingOverlay from "../components/LoadingOverlay";
+import SeverityChart from "../components/SeverityChart";
+import ProtocolMixChart from "../components/ProtocolMixChart";
+import SessionAnalysisChart from "../components/SessionAnalysisChart";
 
 const PAGE_SIZE = 100;
 
@@ -56,6 +61,9 @@ export default function Dashboard() {
   const [rawFlows, setRawFlows] = useState([]);
   const [loading, setLoading] = useState(false);
   const [alert, setAlert] = useState("");
+  const [severityData, setSeverityData] = useState([]);
+  const [sessionData, setSessionData] = useState([]);
+  const [searchEventId, setSearchEventId] = useState("");
   const workerRef = useRef(null);
 
   // ── Worker lifecycle ──────────────────────────────────
@@ -92,6 +100,12 @@ export default function Dashboard() {
     if (targetIP) fetchTargetFlows(targetIP);
     else setRawFlows([]);
   }, [targetIP]);
+
+  // ── Fetch severity & session stats on filter change ────
+  useEffect(() => {
+    fetchSeverityData(targetIP, filters.timeRange);
+    fetchSessionData(targetIP, filters.timeRange);
+  }, [targetIP, filters.timeRange]);
 
   // ── Rebuild chart on filter/flow change ───────────────
   useEffect(() => {
@@ -143,6 +157,32 @@ export default function Dashboard() {
     }
   };
 
+  const fetchSeverityData = async (ip, timeRange) => {
+    try {
+      const res = await api.get("/stats/category-magnitude", {
+        params: { target_ip: ip, time_range: timeRange },
+      });
+      setSeverityData(res.data || []);
+    } catch (err) {
+      if (!isNoDataError(err)) {
+        console.error("Failed to load severity stats:", err);
+      }
+    }
+  };
+
+  const fetchSessionData = async (ip, timeRange) => {
+    try {
+      const res = await api.get("/stats/session-analysis", {
+        params: { target_ip: ip, time_range: timeRange },
+      });
+      setSessionData(res.data || []);
+    } catch (err) {
+      if (!isNoDataError(err)) {
+        console.error("Failed to load session stats:", err);
+      }
+    }
+  };
+
   const fetchTargetFlows = async (ip) => {
     setLoading(true);
     try {
@@ -177,7 +217,13 @@ export default function Dashboard() {
     setRawFlows([]);
     setChartData([]);
     setLanes([]);
-    await Promise.all([fetchSummary(), fetchProtocols(), fetchIPs()]);
+    await Promise.all([
+      fetchSummary(),
+      fetchProtocols(),
+      fetchIPs(),
+      fetchSeverityData(targetIP, filters.timeRange),
+      fetchSessionData(targetIP, filters.timeRange),
+    ]);
     await loadLogPage(1);
   };
 
@@ -199,9 +245,26 @@ export default function Dashboard() {
     return Object.entries(counts).sort((a, b) => b[1] - a[1])[0]?.[0] || "—";
   }, [chartData]);
 
+  const protocolMix = useMemo(() => {
+    if (!sessionData.length) return [];
+    const counts = {};
+    for (const item of sessionData) {
+      const p = item.protocol;
+      counts[p] = (counts[p] || 0) + (item.event_count || 1);
+    }
+    return Object.entries(counts).map(([Protocol, events]) => ({
+      Protocol,
+      events: Number(events),
+    })).sort((a, b) => b.events - a.events);
+  }, [sessionData]);
+
   return (
     <div className="app-shell">
-      <Header onUploadComplete={handleUploadComplete} />
+      <Header
+        onUploadComplete={handleUploadComplete}
+        timeRange={filters.timeRange}
+        onTimeRangeChange={(val) => handleFilterChange({ ...filters, timeRange: val })}
+      />
 
       {alert && (
         <div className="alert-banner" onClick={() => setAlert("")} style={{ cursor: "pointer" }}>
@@ -228,53 +291,89 @@ export default function Dashboard() {
           filters={filters}
           onTargetChange={handleTargetChange}
           onFilterChange={handleFilterChange}
+          searchEventId={searchEventId}
+          onSearchEventIdChange={setSearchEventId}
         />
 
-        {/* Main content */}
+        {/* Main content area */}
         <main className="main-area">
-          {/* Chart panel */}
-          <div className="chart-panel-wrap">
-            <div className="chart-panel-header">
-              <span className="chart-panel-title">Network Traffic Flow Map</span>
-              <div className="chart-stats">
-                <div className="chart-stat">
-                  <span>Active Connections:</span>
-                  <strong>{chartData.length}</strong>
-                </div>
-                <div className="chart-stat">
-                  <span>Data Transferred:</span>
-                  <strong>{fmtBytes(totalBytes)}</strong>
-                </div>
-                <div className="chart-stat">
-                  <span>Top Protocol:</span>
-                  <strong>{topProtocol}</strong>
-                </div>
-              </div>
-              <button className="chart-menu-btn" aria-label="Chart options">
-                <MoreVertical style={{ width: 15, height: 15 }} />
-              </button>
-            </div>
-
-            <TrafficFlowMap flows={chartData} lanes={lanes} targetIP={targetIP} />
+          {/* Top row: KPI cards */}
+          <div className="kpi-row">
+            <KPICards summary={summary} />
           </div>
 
-          {/* Log table */}
-          <div className="log-panel">
-            <div className="log-panel-header">
-              <div>
-                <h3>Virtualized Network Logs</h3>
-                <p>Click a row to investigate a new target IP.</p>
+          {/* Middle row: Timeline graph & Traffic Flow hierarchy */}
+          <div className="middle-row">
+            {/* Communication Network Timeline Card */}
+            <div className="dash-card">
+              <div className="dash-card-header">
+                <span className="dash-card-title">Communication Network Timeline</span>
+                <button className="dash-card-menu" aria-label="Timeline Options">
+                  ···
+                </button>
               </div>
-              <span className="log-count">{logTotal.toLocaleString()} records</span>
+              <div className="dash-card-body">
+                <NetworkGraph flows={chartData} lanes={lanes} targetIP={targetIP} />
+              </div>
             </div>
-            <LogTable
-              totalRows={logTotal}
-              pageSize={PAGE_SIZE}
-              pageCache={logPages}
-              loadPage={loadLogPage}
-              onRowClick={handleRowClick}
-              selectedTarget={targetIP}
-            />
+
+            {/* Traffic Flow Card */}
+            <div className="dash-card">
+              <TrafficFlowCard flows={chartData} targetIP={targetIP} protocols={protocolMix} />
+            </div>
+          </div>
+
+          {/* Bottom row: Event log & ECharts analytics cards */}
+          <div className="bottom-dashboard-grid">
+            {/* Detailed Event Log Card */}
+            <div className="log-panel">
+              <div className="log-panel-header">
+                <div>
+                  <h3>DETAILED EVENT LOG</h3>
+                  <p>Click a row to investigate a new target IP.</p>
+                </div>
+                <span className="log-count">{logTotal.toLocaleString()} records</span>
+              </div>
+              <LogTable
+                totalRows={logTotal}
+                pageSize={PAGE_SIZE}
+                pageCache={logPages}
+                loadPage={loadLogPage}
+                onRowClick={handleRowClick}
+                selectedTarget={targetIP}
+                searchEventId={searchEventId}
+              />
+            </div>
+
+            {/* Severity by Category Card */}
+            <div className="dashboard-chart-card">
+              <div className="dashboard-chart-header">
+                <h3>LOW-LEVEL CATEGORY MAGNITUDE</h3>
+              </div>
+              <div className="dashboard-chart-body">
+                <SeverityChart data={severityData} />
+              </div>
+            </div>
+
+            {/* Protocol Mix Card */}
+            <div className="dashboard-chart-card">
+              <div className="dashboard-chart-header">
+                <h3>PROTOCOL MIX</h3>
+              </div>
+              <div className="dashboard-chart-body">
+                <ProtocolMixChart data={protocolMix} />
+              </div>
+            </div>
+
+            {/* Session Duration & Traffic Card */}
+            <div className="dashboard-chart-card">
+              <div className="dashboard-chart-header">
+                <h3>SESSION DURATION & TRAFFIC</h3>
+              </div>
+              <div className="dashboard-chart-body">
+                <SessionAnalysisChart data={sessionData} />
+              </div>
+            </div>
           </div>
         </main>
       </div>

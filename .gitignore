@@ -1,0 +1,11 @@
+# Python caches
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Replit/Agent metadata
+.replit
+.agents/
+.local/
+artifacts/
+attached_assets/
