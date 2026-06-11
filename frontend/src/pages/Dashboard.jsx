@@ -64,6 +64,7 @@ export default function Dashboard() {
   const [severityData, setSeverityData] = useState([]);
   const [sessionData, setSessionData] = useState([]);
   const [searchEventId, setSearchEventId] = useState("");
+  const [timelineTimeLimit, setTimelineTimeLimit] = useState(null);
   const workerRef = useRef(null);
 
   // ── Worker lifecycle ──────────────────────────────────
@@ -258,6 +259,15 @@ export default function Dashboard() {
     })).sort((a, b) => b.events - a.events);
   }, [sessionData]);
 
+  const filteredFlowsForTree = useMemo(() => {
+    if (!timelineTimeLimit || !chartData.length) return chartData;
+    return chartData.filter((f) => {
+      const timeStr = Array.isArray(f) ? f[1] : f.Time;
+      const timeMs = timeStr ? new Date(timeStr).getTime() : 0;
+      return timeMs <= timelineTimeLimit;
+    });
+  }, [chartData, timelineTimeLimit]);
+
   return (
     <div className="app-shell">
       <Header
@@ -313,13 +323,13 @@ export default function Dashboard() {
                 </button>
               </div>
               <div className="dash-card-body">
-                <NetworkGraph flows={chartData} lanes={lanes} targetIP={targetIP} />
+                <NetworkGraph flows={chartData} lanes={lanes} targetIP={targetIP} onTimeChange={setTimelineTimeLimit} />
               </div>
             </div>
 
             {/* Traffic Flow Card */}
             <div className="dash-card">
-              <TrafficFlowCard flows={chartData} targetIP={targetIP} protocols={protocolMix} />
+              <TrafficFlowCard flows={filteredFlowsForTree} targetIP={targetIP} protocols={protocolMix} />
             </div>
           </div>
 
@@ -342,6 +352,7 @@ export default function Dashboard() {
                 onRowClick={handleRowClick}
                 selectedTarget={targetIP}
                 searchEventId={searchEventId}
+                timelineTimeLimit={timelineTimeLimit}
               />
             </div>
 

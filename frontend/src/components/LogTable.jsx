@@ -29,7 +29,7 @@ export default function LogTable({ totalRows, pageSize, pageCache, loadPage, onR
     if (visibleRows.length >= pageSize * 3) break;
   }
 
-  const filteredRows = searchEventId
+  let filteredRows = searchEventId
     ? visibleRows.filter(
         (row) =>
           row &&
@@ -38,6 +38,14 @@ export default function LogTable({ totalRows, pageSize, pageCache, loadPage, onR
             .includes(searchEventId.toLowerCase())
       )
     : visibleRows;
+
+  if (timelineTimeLimit) {
+    filteredRows = filteredRows.filter((row) => {
+      if (!row || !row.Time) return false;
+      const rowTimeMs = new Date(row.Time).getTime();
+      return rowTimeMs <= timelineTimeLimit;
+    });
+  }
 
   return (
     <div className="log-list-wrapper" onScroll={handleScroll} style={{ maxHeight: "580px", overflow: "auto" }}>

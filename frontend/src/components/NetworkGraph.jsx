@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useRef, useCallback } from 'react';
+import React, { useMemo, useState, useRef, useCallback, useEffect } from 'react';
 
 const PROTOCOL_COLORS = {
   TCP: '#4a9eff',
@@ -9,23 +9,58 @@ const PROTOCOL_COLORS = {
 const DEFAULT_EDGE_COLOR = '#4a9eff';
 const MAX_OUTER_NODES = 20;
 
-function NetworkGraph({ flows = [], targetIP = '', lanes = [] }) {
+function NetworkGraph({ flows = [], targetIP = '', lanes = [], onTimeChange }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [scrubberPos, setScrubberPos] = useState(0);
   const trackRef = useRef(null);
   const draggingRef = useRef(false);
 
-  // Derive time range
-  const { startTime, endTime } = useMemo(() => {
-    if (!flows || flows.length === 0) return { startTime: '', endTime: '' };
+  // Derive time range in strings and millisecond timestamps
+  const { startTime, endTime, startTimeMs, endTimeMs } = useMemo(() => {
+    if (!flows || flows.length === 0) return { startTime: '', endTime: '', startTimeMs: 0, endTimeMs: 0 };
     const times = flows
       .map((f) => (Array.isArray(f) ? f[1] : f.Time))
       .filter(Boolean)
       .sort();
-    return { startTime: times[0] || '', endTime: times[times.length - 1] || '' };
+    const start = times[0] || '';
+    const end = times[times.length - 1] || '';
+    return { 
+      startTime: start, 
+      endTime: end,
+      startTimeMs: start ? new Date(start).getTime() : 0,
+      endTimeMs: end ? new Date(end).getTime() : 0
+    };
   }, [flows]);
 
-  // Gather unique remote IPs and per-edge stats
+  // Calculate the currently selected time limit in ms based on scrubber position
+  const selectedTimeMs = useMemo(() => {
+    if (!startTimeMs || !endTimeMs) return 0;
+    return startTimeMs + scrubberPos * (endTimeMs - startTimeMs);
+  }, [startTimeMs, endTimeMs, scrubberPos]);
+
+  // Propagate time changes to the parent component (e.g. to filter the logs table)
+  useEffect(() => {
+    if (selectedTimeMs && onTimeChange) {
+      onTimeChange(selectedTimeMs);
+    }
+  }, [selectedTimeMs, onTimeChange]);
+
+  // Handle auto-playing scrubber movement
+  useEffect(() => {
+    if (!isPlaying) return;
+    const interval = setInterval(() => {
+      setScrubberPos((prev) => {
+        if (prev >= 1) {
+          setIsPlaying(false);
+          return 1;
+        }
+        return Math.min(1, prev + 0.015);
+      });
+    }, 150);
+    return () => clearInterval(interval);
+  }, [isPlaying]);
+
+  // Gather unique remote IPs and per-edge stats up to the selected time
   const { remoteIPs, edgeMap } = useMemo(() => {
     if (!flows || flows.length === 0) return { remoteIPs: [], edgeMap: {} };
 
@@ -34,16 +69,23 @@ function NetworkGraph({ flows = [], targetIP = '', lanes = [] }) {
       let remote = '';
       let bytes = 0;
       let protocol = 'TCP';
+      let timeStr = '';
 
       if (Array.isArray(f)) {
         remote = f[10];
         bytes = Number(f[6]) || 0;
         protocol = f[5] || 'TCP';
+        timeStr = f[1];
       } else {
         remote = f.remote || (f['Source IP'] === targetIP ? f['Destination IP'] : f['Source IP']);
         bytes = (Number(f['Bytes Sent']) || 0) + (Number(f['Bytes Received']) || 0);
         protocol = f.Protocol || 'TCP';
+        timeStr = f.Time;
       }
+
+      // Filter out flows that occur after the selected scrubber time
+      const timeMs = timeStr ? new Date(timeStr).getTime() : 0;
+      if (selectedTimeMs && timeMs > selectedTimeMs) return;
 
       if (!remote || remote === targetIP) return;
       if (!map[remote]) {
@@ -56,7 +98,7 @@ function NetworkGraph({ flows = [], targetIP = '', lanes = [] }) {
 
     const ips = Object.keys(map).slice(0, MAX_OUTER_NODES);
     return { remoteIPs: ips, edgeMap: map };
-  }, [flows, targetIP]);
+  }, [flows, targetIP, selectedTimeMs]);
 
   // SVG dimensions
   const width = 700;
