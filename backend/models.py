@@ -28,3 +28,33 @@ class FlowRecord(BaseModel):
     bytes_total: float
     remote: str
     direction: str
+
+
+class LogRecord(BaseModel):
+    Event_ID: int
+    Event_Name: str
+    Log_Source: str
+    Event_Count: int
+    Time: str
+    Low_Level_Category: str
+    Source_IP: str
+    Source_Port: int
+    Destination_IP: str
+    Destination_Port: int
+    Protocol: str
+    Magnitude: int
+    Bytes_Sent: float
+    Bytes_Received: float
+    Duration_Seconds: float
+
+
+class CategoryMagnitude(BaseModel):
+    category: str
+    magnitude: float
+
+
+class ScatterDataPoint(BaseModel):
+    duration: float
+    total_bytes: float
+    event_count: int
+    magnitude: int

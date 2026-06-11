@@ -7,13 +7,15 @@ from .services.summary_service import build_summary
 from .services.ip_service import list_unique_ips
 from .services.protocol_service import build_protocol_stats
 from .services.flow_service import extract_target_flows
+from .services.category_service import build_category_magnitude
+from .services.scatter_service import build_scatter_data
 
 app = FastAPI(title="Network Log Analyzer")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
-    allow_credentials=True,
+    allow_origins=["*"],
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -91,3 +93,17 @@ def logs(page: int = 1, limit: int = 100):
         "limit": limit,
         "records": page_df.to_dict(orient="records"),
     }
+
+
+@app.get("/category-magnitude")
+def category_magnitude():
+    """Returns aggregated Magnitude grouped by Low Level Category."""
+    df = require_data()
+    return build_category_magnitude(df)
+
+
+@app.get("/scatter-data")
+def scatter_data():
+    """Returns scatter plot data: Duration (X) vs Total Bytes (Y)."""
+    df = require_data()
+    return build_scatter_data(df)

@@ -1,0 +1,8 @@
+0000000000000000000000000000000000000000 76e4c72a3102191257357174d3e95e3eeedb38fa bansalbhavya92 <60718743-bansalbhavya92@users.noreply.replit.com> 1781154946 +0000	branch: Created from origin/main
+76e4c72a3102191257357174d3e95e3eeedb38fa 76e4c72a3102191257357174d3e95e3eeedb38fa bansalbhavya92 <60718743-bansalbhavya92@users.noreply.replit.com> 1781154946 +0000	checkout: moving from main to main
+76e4c72a3102191257357174d3e95e3eeedb38fa 0cffee113b330531ae9c0ab80c807eabb2288e81 Replit Agent <agent@replit.com> 1781155229 +0000	commit: Enable cross-origin requests and configure backend proxy for deployment
+0cffee113b330531ae9c0ab80c807eabb2288e81 b6842f4cab9ddca2226134099f762e37b3ee0405 Replit Agent <agent@replit.com> 1781156309 +0000	commit: Fix application crash and noisy error messages on startup
+b6842f4cab9ddca2226134099f762e37b3ee0405 e2b18c78ef6919b6878dbc080a7a7bc8f2c85ecb Replit Agent <agent@replit.com> 1781156387 +0000	commit: Fix error that occurs when viewing traffic flow details
+e2b18c78ef6919b6878dbc080a7a7bc8f2c85ecb 7ab2bbf63df5d36b13bd65b9dc2f84954b64db6f Replit Agent <agent@replit.com> 1781159875 +0000	commit: Add a new network dashboard mockup with interactive components
+7ab2bbf63df5d36b13bd65b9dc2f84954b64db6f 07a904a8a136c2286d08e65826e6e9ca653f3e3b Replit Agent <agent@replit.com> 1781160184 +0000	commit: Update dashboard to visualize network traffic flow
+07a904a8a136c2286d08e65826e6e9ca653f3e3b a9e46a2552a8c3f5536cd23076500e15fddaa407 Replit Agent <agent@replit.com> 1781160902 +0000	commit: Update application design to match the new canvas mockup

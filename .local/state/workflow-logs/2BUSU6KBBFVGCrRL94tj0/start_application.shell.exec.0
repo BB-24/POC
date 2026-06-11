@@ -1,0 +1,255 @@
+
+> frontend@0.0.0 dev
+> vite
+
+[1G[0K
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[1;1H[0J
+  [32m[1mVITE[22m v8.0.16[39m  [2mready in [0m[1m196[22m[2m[0m ms[22m
+
+  [32m➜[39m  [1mLocal[22m:   [36mhttp://localhost:[1m5000[22m/[39m
+  [32m➜[39m  [1mNetwork[22m: [36mhttp://172.24.0.2:[1m5000[22m/[39m
+[2m[32m  ➜[39m[22m[2m  press [22m[1mh + enter[22m[2m to show help[22m
+[2m5:18:07 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /summary[39m
+Error: connect ECONNREFUSED 127.0.0.1:8000
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1611:16)
+[2m5:18:07 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /protocols[39m
+Error: connect ECONNREFUSED 127.0.0.1:8000
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1611:16)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[1;1H[0J[2m5:18:07 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /protocols[39m
+Error: connect ECONNREFUSED 127.0.0.1:8000
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1611:16) [33m(x2)[39m
+[2m5:18:07 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /logs?page=1&limit=100[39m
+Error: connect ECONNREFUSED 127.0.0.1:8000
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1611:16)
+[2m5:18:07 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /summary[39m
+Error: connect ECONNREFUSED 127.0.0.1:8000
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1611:16)
+[2m5:18:07 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /logs?page=1&limit=100[39m
+Error: connect ECONNREFUSED 127.0.0.1:8000
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1611:16)
+[2m5:29:05 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m [31m[Unhandled rejection] [1mAxiosError[22m: Request failed with status code 400
+[39m > AxiosError$1 node_modules/axios/lib/core/AxiosError.js:102:4
+ > settle node_modules/axios/lib/core/settle.js:19:11
+ > onloadend node_modules/axios/lib/adapters/xhr.js:64:10
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[1;1H[0J[2m5:29:21 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m [31m[Unhandled rejection] [1mAxiosError[22m: Request failed with status code 400
+[39m > AxiosError$1 node_modules/axios/lib/core/AxiosError.js:102:4
+ > settle node_modules/axios/lib/core/settle.js:19:11
+ > onloadend node_modules/axios/lib/adapters/xhr.js:64:10
+ [33m(x2)[39m
+[2m5:35:59 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m [31m[Unhandled error] [1mTypeError[22m: pointerShapeBuilder$2[axisPointerType] is not a function
+[39m > CartesianAxisPointer.prototype.makeElOption node_modules/echarts/lib/component/axisPointer/CartesianAxisPointer.js:66:63
+ > BaseAxisPointer.prototype.render node_modules/echarts/lib/component/axisPointer/BaseAxisPointer.js:97:9
+ > AxisView.prototype._doUpdateAxisPointerClass node_modules/echarts/lib/component/axis/AxisView.js:97:80
+ > AxisView.prototype.updateAxisPointer node_modules/echarts/lib/component/axis/AxisView.js:75:9
+ > callView node_modules/echarts/lib/core/echarts.js:1281:61
+ > each$12 node_modules/zrender/lib/core/util.js:217:12
+ > updateDirectly node_modules/echarts/lib/core/echarts.js:1219:13
+ > doDispatchAction/< node_modules/echarts/lib/core/echarts.js:1541:25
+ > each$12 node_modules/zrender/lib/core/util.js:217:12
+ > doDispatchAction node_modules/echarts/lib/core/echarts.js:1516:11
+ > ECharts.prototype.dispatchAction node_modules/echarts/lib/core/echarts.js:1083:21
+ > dispatchAction node_modules/echarts/lib/component/axisPointer/globalListener.js:118:10
+ > AxisPointerView.prototype.render/< node_modules/echarts/lib/component/axisPointer/AxisPointerView.js:64:23
+ > doEnter node_modules/echarts/lib/component/axisPointer/globalListener.js:100:9
+ > curry$1/< node_modules/zrender/lib/core/util.js:322:20
+ > initGlobalListeners/useHandler/</< node_modules/echarts/lib/component/axisPointer/globalListener.js:76:18
+ > each$12 node_modules/zrender/lib/core/util.js:227:19
+ > inner node_modules/echarts/lib/component/axisPointer/globalListener.js:75:11
+ > Eventful.prototype.trigger node_modules/zrender/lib/core/Eventful.js:103:32
+ > Handler.prototype.dispatchToElement node_modules/zrender/lib/Handler.js:148:17
+ > Handler.prototype.mousemove node_modules/zrender/lib/Handler.js:99:13
+ > Eventful.prototype.trigger node_modules/zrender/lib/core/Eventful.js:103:32
+ > mousemove node_modules/zrender/lib/dom/HandlerProxy.js:90:13
+ > mountLocalDOMEventListeners/</< node_modules/zrender/lib/dom/HandlerProxy.js:209:49
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[1;1H[0J[2m5:37:11 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/Dashboard.jsx[22m
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[1;1H[0J[2m5:37:13 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/Dashboard.jsx[22m [33m(x2)[39m
+[2m5:37:17 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m [2m[console.error] [22m[ECharts] `resize` should not be called during main process.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[1;1H[0J[2m5:37:24 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/Dashboard.jsx[22m
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[1;1H[0J[2m5:37:35 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/Dashboard.jsx[22m [33m(x2)[39m
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[1;1H[0J[2m5:37:37 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/components/TrafficFlowMap.jsx[22m
+[2m5:37:37 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m [2m[console.error] [22m[ECharts] `setOption` should not be called during main process.
