@@ -1,0 +1,143 @@
+Prompt:
+
+Redesign this cybersecurity/network traffic analytics dashboard to look like a modern enterprise SaaS product (similar to Datadog, Grafana Cloud, Vercel Analytics, and Cloudflare Dashboard).
+
+Goals
+Reduce visual clutter by 70%
+Improve readability and data hierarchy
+Make traffic patterns immediately understandable
+Focus on actionable insights instead of raw volume
+Professional SOC/NOC aesthetic
+Layout
+
+Create a responsive 3-column dashboard:
+
+Top Header
+
+Dashboard title: "Network Traffic Intelligence"
+Global date/time range selector
+Search by IP, hostname, or subnet
+Refresh button
+Dark mode optimized
+
+Left Sidebar (collapsible)
+
+Target IP selector
+Protocol filters:
+TCP
+UDP
+ICMP
+Traffic volume filters
+Saved views
+Keep sidebar width under 260px
+KPI Row
+
+Display cards across the top:
+
+Total Traffic
+Active Hosts
+Unique Connections
+Peak Throughput
+Top Talker
+Threat Score
+
+Each card should contain:
+
+Large metric
+Trend indicator
+Small sparkline
+Main Content Area
+Network Traffic Timeline (Primary Chart)
+
+Replace the current crowded flow map with:
+
+Interactive time-series chart
+Traffic volume over time
+Separate colored lines for TCP, UDP, ICMP
+Hover tooltips
+Zoom and brush controls
+Smooth curves
+Clear gridlines
+Flow Visualization (Secondary)
+
+Replace thousands of overlapping arrows with:
+
+Sankey diagram
+OR
+Force-directed network graph
+
+Show:
+
+Source nodes
+Destination nodes
+Connection thickness based on traffic volume
+Maximum 30 visible nodes
+Clustering enabled
+Right Insights Panel
+
+Add cards for:
+
+Top Talkers
+
+Top 5 IPs
+Traffic percentage bars
+
+Protocol Distribution
+
+Donut chart
+TCP / UDP / ICMP breakdown
+
+Alerts
+
+Suspicious spikes
+Anomalous hosts
+Port scanning indicators
+
+Geo Distribution
+
+Small world map
+Traffic origins
+Design System
+
+Style:
+
+Premium enterprise cybersecurity product
+Dark theme (#0B1220 background)
+Card background (#111827)
+Subtle borders (#1F2937)
+Rounded corners (12px)
+Consistent spacing (24px grid)
+
+Typography:
+
+Inter font
+Clear hierarchy
+Large metric numbers
+Muted secondary text
+
+Colors:
+
+TCP: Blue (#3B82F6)
+UDP: Orange (#F59E0B)
+ICMP: Purple (#8B5CF6)
+Success: Green (#10B981)
+Warning: Yellow (#FBBF24)
+Critical: Red (#EF4444)
+Data Visualization Rules
+Never display more than 50 lines simultaneously
+Aggregate low-volume traffic
+Use density heatmaps for large datasets
+Avoid overlapping labels
+Show summaries before details
+Prioritize trend analysis over raw packet visualization
+UX Improvements
+Hover tooltips everywhere
+Drill-down interactions
+Export PNG/CSV
+Smooth animations (200ms)
+Loading skeletons
+Empty states
+Responsive design
+Expected Result
+
+The dashboard should feel like a commercial security analytics platform used by SOC analysts, with clear visual hierarchy, clean spacing, and meaningful insights rather than a dense wall of overlapping traffic arrows.
