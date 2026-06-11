@@ -31,6 +31,7 @@ export default function TrafficFlowMap({ flows, lanes, targetIP }) {
       tooltip: {
         trigger: "item",
         formatter: (params) => {
+          if (!params.data) return "";
           const [_, time, __, ___, thickness, protocol, bytes, duration, source, destination, remote] = params.data;
           return [`<div style="color:#e5e7eb; line-height:1.5">`,
             `<strong>${protocol}</strong>`,
