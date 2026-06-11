@@ -10,6 +10,10 @@ class LogProcessor:
         "Bytes Sent",
         "Bytes Received",
         "Duration Seconds",
+        "Magnitude",
+        "Event Count",
+        "Source Port",
+        "Destination Port",
     ]
 
     @staticmethod
