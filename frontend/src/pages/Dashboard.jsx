@@ -55,6 +55,7 @@ export default function Dashboard() {
     fetchSummary();
     fetchProtocols();
     loadLogPage(1);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -95,7 +96,9 @@ export default function Dashboard() {
       const response = await api.get("/summary");
       setSummary(response.data);
     } catch (error) {
-      setAlert(getErrorMessage(error, "Unable to load dashboard summary."));
+      if (!isNoDataError(error)) {
+        setAlert(getErrorMessage(error, "Unable to load dashboard summary."));
+      }
     } finally {
       setLoading(false);
     }
@@ -106,7 +109,9 @@ export default function Dashboard() {
       const response = await api.get("/protocols");
       setProtocols(response.data);
     } catch (error) {
-      setAlert(getErrorMessage(error, "Unable to load protocol metrics."));
+      if (!isNoDataError(error)) {
+        setAlert(getErrorMessage(error, "Unable to load protocol metrics."));
+      }
     }
   };
 
@@ -153,7 +158,9 @@ export default function Dashboard() {
         fetchIPs();
       }
     } catch (error) {
-      setAlert(getErrorMessage(error, "Unable to load log rows."));
+      if (!isNoDataError(error)) {
+        setAlert(getErrorMessage(error, "Unable to load log rows."));
+      }
     }
   };
 
@@ -229,6 +236,14 @@ export default function Dashboard() {
       </div>
       <LoadingOverlay visible={loading} />
     </div>
+  );
+}
+
+function isNoDataError(error) {
+  return (
+    error?.response?.status === 400 &&
+    typeof error?.response?.data?.detail === "string" &&
+    error.response.data.detail.toLowerCase().includes("no log data loaded")
   );
 }
 

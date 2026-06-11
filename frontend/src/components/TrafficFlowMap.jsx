@@ -69,7 +69,7 @@ export default function TrafficFlowMap({ flows, lanes, targetIP }) {
       ],
       axisPointer: {
         show: true,
-        type: "cross",
+        type: "line",
         label: { backgroundColor: "#475569" },
       },
       series: [
